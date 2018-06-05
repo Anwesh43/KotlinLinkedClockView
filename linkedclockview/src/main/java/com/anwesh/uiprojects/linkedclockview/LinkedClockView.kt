@@ -155,4 +155,27 @@ class LinkedClockView (ctx : Context) : View(ctx) {
             curr.startUpdating(startcb)
         }
     }
+
+    data class Renderer(var view : LinkedClockView) {
+
+        private val linkedClock : LinkedClock = LinkedClock(0)
+
+        private val animator : Animator = Animator(view)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(Color.parseColor("#212121"))
+            linkedClock.draw(canvas, paint)
+            animator.animate {
+                linkedClock.update {
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            linkedClock.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }
