@@ -93,7 +93,21 @@ class LinkedClockView (ctx : Context) : View(ctx) {
         }
 
         fun draw(canvas : Canvas, paint : Paint) {
-
+            paint.color = Color.parseColor("#16a085")
+            val w : Float = canvas.width.toFloat()
+            val h : Float = canvas.height.toFloat()
+            val gap : Float = (h / CLOCK_NODES)
+            val deg : Float = 360f / CLOCK_NODES
+            paint.strokeCap = Paint.Cap.ROUND
+            paint.strokeWidth = Math.min(w, h) / 60
+            canvas.save()
+            canvas.translate(w/2, gap * i + gap/2)
+            canvas.drawCircle(0f, 0f, gap/3, paint)
+            canvas.save()
+            canvas.rotate(deg * i + deg * state.scales[1])
+            canvas.drawLine(0f, 0f, 0f, -gap/4, paint)
+            canvas.restore()
+            canvas.restore()
         }
 
         fun startUpdating(startcb : () -> Unit) {
@@ -102,6 +116,18 @@ class LinkedClockView (ctx : Context) : View(ctx) {
 
         fun update(stopcb : (Float) -> Unit) {
             state.update(stopcb)
+        }
+
+        fun getNext(dir : Int, cb : () -> Unit) : ClockNode {
+            var curr : ClockNode? = prev
+            if (dir == 1) {
+                curr = next
+            }
+            if (curr != null) {
+                return curr
+            }
+            cb()
+            return this
         }
     }
 }
