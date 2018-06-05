@@ -23,14 +23,16 @@ class LinkedClockView (ctx : Context) : View(ctx) {
         return true
     }
 
-    data class State(var scale : Float = 0f, var dir : Float = 0f, var prevScale : Float = 0f) {
+    data class State(var j : Int = 0, var dir : Float = 0f, var prevScale : Float = 0f) {
+
+        val scales : Array<Float> = arrayOf(0f, 0f)
 
         fun update(stopcb : (Float) -> Unit) {
-            scale += 0.1f * dir
-            if (Math.abs(scale - prevScale) > 1) {
-                scale = prevScale + dir
+            scales[j] += 0.1f * dir
+            if (Math.abs(scales[j] - prevScale) > 1) {
+                scales[j] = prevScale + dir
                 dir = 0f
-                prevScale = scale
+                prevScale = scales[j]
                 stopcb(prevScale)
             }
         }
