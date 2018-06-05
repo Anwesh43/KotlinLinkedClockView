@@ -4,6 +4,7 @@ package com.anwesh.uiprojects.linkedclockview
  * Created by anweshmishra on 05/06/18.
  */
 
+import android.app.Activity
 import android.content.Context
 import android.view.View
 import android.view.MotionEvent
@@ -183,6 +184,14 @@ class LinkedClockView (ctx : Context) : View(ctx) {
             linkedClock.startUpdating {
                 animator.start()
             }
+        }
+    }
+
+    companion object {
+
+        fun create(activity : Activity) {
+            val view : LinkedClockView = LinkedClockView(activity)
+            activity.setContentView(view)
         }
     }
 }
