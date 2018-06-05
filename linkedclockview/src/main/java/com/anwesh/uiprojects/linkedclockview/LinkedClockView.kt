@@ -9,6 +9,8 @@ import android.view.View
 import android.view.MotionEvent
 import android.graphics.*
 
+val CLOCK_NODES : Int = 5
+
 class LinkedClockView (ctx : Context) : View(ctx) {
 
     private val paint : Paint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -66,6 +68,38 @@ class LinkedClockView (ctx : Context) : View(ctx) {
             if (animated) {
                 animated = false
             }
+        }
+    }
+
+    data class ClockNode(var i : Int) {
+
+        private val state : State = State()
+
+        private var next : ClockNode? = null
+
+        private var prev : ClockNode? = null
+
+        init {
+            addNeighbor()
+        }
+
+        fun addNeighbor() {
+            if (i < CLOCK_NODES - 1) {
+                next = ClockNode(i + 1)
+                next?.prev = this
+            }
+        }
+
+        fun draw(canvas : Canvas, paint : Paint) {
+
+        }
+
+        fun startUpdating(startcb : () -> Unit) {
+            state.startUpdating(startcb)
+        }
+
+        fun update(stopcb : (Float) -> Unit) {
+            state.update(stopcb)
         }
     }
 }
