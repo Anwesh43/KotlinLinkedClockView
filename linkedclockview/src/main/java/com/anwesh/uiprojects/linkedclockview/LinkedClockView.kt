@@ -100,8 +100,9 @@ class LinkedClockView (ctx : Context) : View(ctx) {
             val deg : Float = 360f / CLOCK_NODES
             paint.strokeCap = Paint.Cap.ROUND
             paint.strokeWidth = Math.min(w, h) / 60
+            prev?.draw(canvas, paint)
             canvas.save()
-            canvas.translate(w/2, gap * i + gap/2)
+            canvas.translate(w/2, gap * i - gap/2 + gap * state.scales[0])
             canvas.drawCircle(0f, 0f, gap/3, paint)
             canvas.save()
             canvas.rotate(deg * i + deg * state.scales[1])
@@ -128,6 +129,30 @@ class LinkedClockView (ctx : Context) : View(ctx) {
             }
             cb()
             return this
+        }
+    }
+
+    data class LinkedClock(var i : Int) {
+
+        private var curr : ClockNode = ClockNode(0)
+
+        private var dir : Int = 1
+
+        fun draw(canvas : Canvas, paint : Paint) {
+            curr.draw(canvas, paint)
+        }
+
+        fun update(stopcb : (Float) -> Unit) {
+            curr.update {
+                curr = curr.getNext(dir) {
+                    dir *= -1
+                }
+                stopcb(it)
+            }
+        }
+
+        fun startUpdating(startcb : () -> Unit) {
+            curr.startUpdating(startcb)
         }
     }
 }
